@@ -64,7 +64,7 @@ public class FarkleGame {
 			System.out.print(dice[i] + " | ");
 			diceSides[i] = 0;
 		}
-		//if(possibleOpts == " ") { possibleOpts = "FARKLE!"; }
+		if(possibleOpts == " ") { possibleOpts = "FARKLE!"; }
 		System.out.println("\nPossible Total Points: " + possibleScore);
 		System.out.println("Possible Picks: " + possibleOpts);
 		this.possibleOpts = " ";
@@ -129,7 +129,7 @@ public class FarkleGame {
 					possibleOpts += nums+nums+nums+nums+nums+nums;
 				}
 			}
-		} else {
+		}if (playerCheck){
 				playerNumbers = Arrays.asList(playerPicks.split((" ")));
 				char Num = playerNumbers.get(0).charAt(0);
 				for(int x = 0; x < playerNumbers.size(); x++){
@@ -184,11 +184,8 @@ public class FarkleGame {
 		todo = scan.next();
 		*/
 		Scanner scan = new Scanner(System.in);
-		String whatDo;
 		while(numDice > 0){
-			System.out.println("what would you like to do? 'roll, 'end");
-			whatDo = scan.next();
-			if(whatDo=="roll"){ game.diceRoll(); } else if(whatDo=="end"){ break; }
+			game.diceRoll();
 			game.quickSort(0, numDice - 1);
 			game.checkNums();
 			game.print();
@@ -198,7 +195,6 @@ public class FarkleGame {
 			game.checkNums();
 			System.out.println("current set score: " + totalScore + "\n");
 			numDice--;
-			
 		}
 			
 	}
