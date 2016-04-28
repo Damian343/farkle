@@ -12,6 +12,8 @@ public class FarkleGame {
 	static String playerPicks = " ";
 	List<String> playerNumbers;
 	static boolean playerCheck = false;
+	static int farkleCounter = 0;
+	static int pairCount = 0;
 
 	public FarkleGame() {
 		dice = new int[6];
@@ -64,11 +66,9 @@ public class FarkleGame {
 			System.out.print(dice[i] + " | ");
 			diceSides[i] = 0;
 		}
-		if(possibleOpts == " ") { possibleOpts = "FARKLE!"; }
 		System.out.println("\nPossible Total Points: " + possibleScore);
 		System.out.println("Possible Picks: " + possibleOpts);
-		this.possibleOpts = " ";
-		this.possibleScore = 0;
+		System.out.println("Total score: " + totalScore );
 	}
 	
 	public void diceRoll() {
@@ -79,6 +79,27 @@ public class FarkleGame {
 			dice[x] = n;
 			diceSides[n-1]++;
 		}
+	}
+	
+	public boolean farkled() {
+		if(possibleOpts == " ") {
+			if(farkleCounter+1 == 3){
+				System.out.println("Three Farkles in a row! Reset total Score ");
+				farkleCounter = 0;
+			}else { farkleCounter++; }
+			System.out.print("| ");
+			for(int i=0; i < numDice; i++) {
+				System.out.print(dice[i] + " | ");
+				diceSides[i] = 0;
+			}
+			numDice = 6;
+			System.out.println("\n Shoot You Farkled! \n");
+			farkleCounter++;
+			possibleOpts = " ";
+			possibleScore = 0;
+			totalScore = 0;
+			return true;
+		} else { return false; }
 	}
 	
 	public void checkNums() {
@@ -95,18 +116,31 @@ public class FarkleGame {
 					possibleScore += 50;
 					possibleOpts += " 5 ";
 				}
-				if(diceSides[x] == 3) {
+				//fix how to know if 3 pairs
+				if(diceSides[x] == 2){
+					for(int n=x; n < numDice; n++){
+						if(diceSides[n] == 2){
+							pairCount++;
+							possibleOpts+=Integer.toString(n+1)+Integer.toString(n+1);
+						}
+					}
+					if(pairCount == 3){ 
+						possibleScore += 1500;
+					}
+				}
+				if(diceSides[x] == 3){
 					//need to check 1 because 300 points else 2 * 100 200
-					if(x+1 == 1) { possibleScore += 300; } else { possibleScore += (x+1) * 100;}
+					if(x+1 == 1) { possibleScore += 300; } else { possibleScore += (x+1) * 100; }
 					possibleOpts += nums+nums+nums;
 					//checks to see if theres two triplets
+					/*
 					for(int n=0; n < numDice; n++) {
-						if(n == x) { break; }
+						if(n == x) { continue; }
 						else if (diceSides[n] == 3) { 
 							possibleScore += 2500;
 							possibleOpts += Integer.toString(n)+Integer.toString(n)+Integer.toString(n);
 						}
-					}
+					}*/
 				}
 				if(diceSides[x] == 4) {
 					possibleScore += 1000;
@@ -170,10 +204,21 @@ public class FarkleGame {
 						totalScore += 3000;
 					}
 				}
-				playerCheck = false;
+				setEnd();
 			}
 	}
-			
+	
+	public void setEnd(){
+		if((numDice-playerPicks.length()) > 0){
+			if(playerPicks.length() > 1) { numDice = numDice - playerPicks.length(); }
+			else { numDice--; }
+		} else if(numDice == 1){
+			numDice = 6;
+		}
+		playerCheck = false;
+		possibleOpts = " ";
+		possibleScore = 0;
+	}
 	
 	public static void main(String[] args) {
 		FarkleGame game = new FarkleGame();
@@ -188,13 +233,13 @@ public class FarkleGame {
 			game.diceRoll();
 			game.quickSort(0, numDice - 1);
 			game.checkNums();
+			if(game.farkled()) { continue; }
 			game.print();
 			System.out.print("Please select dice: ");
 			playerPicks = scan.next();
+			System.out.println();
 			playerCheck = true;
 			game.checkNums();
-			System.out.println("current set score: " + totalScore + "\n");
-			numDice--;
 		}
 			
 	}
