@@ -104,6 +104,7 @@ public class FarkleGame {
 	
 	public void checkNums() {
 		String nums = " ";
+		String pairs = " ";
 		if(!playerCheck){
 			for(int x=0; x < numDice; x++) {
 				// we have to add one because dice start at 1
@@ -118,15 +119,18 @@ public class FarkleGame {
 				}
 				//fix how to know if 3 pairs
 				if(diceSides[x] == 2){
+					pairCount = 0;
 					for(int n=x; n < numDice; n++){
 						if(diceSides[n] == 2){
 							pairCount++;
-							possibleOpts+=Integer.toString(n+1)+Integer.toString(n+1);
+							pairs+=Integer.toString(n+1)+Integer.toString(n+1);
 						}
 					}
 					if(pairCount == 3){ 
 						possibleScore += 1500;
+						possibleOpts += pairs;
 					}
+					pairs=" ";
 				}
 				if(diceSides[x] == 3){
 					//need to check 1 because 300 points else 2 * 100 200
@@ -209,6 +213,7 @@ public class FarkleGame {
 	}
 	
 	public void setEnd(){
+		playerPicks = playerPicks.replaceAll("\\s","");
 		if((numDice-playerPicks.length()) > 0){
 			if(playerPicks.length() > 1) { numDice = numDice - playerPicks.length(); }
 			else { numDice--; }
@@ -236,7 +241,7 @@ public class FarkleGame {
 			if(game.farkled()) { continue; }
 			game.print();
 			System.out.print("Please select dice: ");
-			playerPicks = scan.next();
+			playerPicks = scan.nextLine();
 			System.out.println();
 			playerCheck = true;
 			game.checkNums();
