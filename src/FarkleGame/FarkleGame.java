@@ -106,6 +106,7 @@ public class FarkleGame {
 		//if turn passed reset possibles, dice to 6, add set score to total
 		possibleScore=0; possibleOpts="";
 		numDice = 6;
+		Arrays.fill(diceSides, 0);
 		score += totalScore;
 		totalScore = 0;
 		playerCheck = false;
@@ -260,6 +261,15 @@ public class FarkleGame {
 		*/
 		Scanner scan = new Scanner(System.in);
 		while(numDice > 0){
+			System.out.println("total set score so far: " + totalScore);
+			System.out.println("Currently " + numDice + " dice remain");
+			System.out.print("would you like to roll again or pass? ");
+			playerPicks = scan.nextLine();
+			System.out.println();
+			if(playerPicks.equals("pass")){
+				game.passTurn();
+				continue;
+			}
 			game.diceRoll();
 			game.quickSort(0, numDice - 1);
 			game.checkNums();
