@@ -162,14 +162,13 @@ public class FarkleGame {
 					if(x+1 == 1) { possibleScore += 300; } else { possibleScore += (x+1) * 100; }
 					possibleOpts += nums+nums+nums;
 					//checks to see if theres two triplets
-					/*
-					for(int n=0; n < numDice; n++) {
-						if(n == x) { continue; }
-						else if (diceSides[n] == 3) { 
+					for(int n=x+1; n < numDice; n++) {
+						if (diceSides[n] == 3) {						    
 							possibleScore += 2500;
 							possibleOpts += Integer.toString(n)+Integer.toString(n)+Integer.toString(n);
+							break;
 						}
-					}*/
+					}
 				}
 				if(diceSides[x] == 4) {
 					possibleScore += 1000;
@@ -204,13 +203,13 @@ public class FarkleGame {
 					}
 					if(playerNumbers.get(x).length() == 3) {
 						//need to check 1 because 300 points else 2 * 100 200
-						if(playerNumbers.get(x) == "1") { totalScore += 300; } else { totalScore += Character.getNumericValue(Num) * 100;}
+						if(playerNumbers.get(x).equals(1)) { totalScore += 300; } else { totalScore += Character.getNumericValue(Num) * 100;}
 						//checks to see if theres two triplets
-						for(int n=0; n < numDice; n++) {
-							if(n == x) { break; }
-							else if (diceSides[n] == 3) { 
-								totalScore += 2500;
+						for(int n=x+1; n < numDice; n++) {
+							if (diceSides[n] == 3) {						    
+								possibleScore += 2500;
 								possibleOpts += Integer.toString(n)+Integer.toString(n)+Integer.toString(n);
+								break;
 							}
 						}
 					}
@@ -275,16 +274,11 @@ public class FarkleGame {
 			game.checkNums();
 			if(game.farkled()) { continue; }
 			game.print();
-			System.out.print("Please select dice or 'pass' to finish set: ");
+			System.out.print("Please select dice: ");
 			playerPicks = scan.nextLine();
-			if(playerPicks.equals("pass")){
-				game.passTurn();
-				continue;
-			} else{
-				System.out.println();
-				playerCheck = true;
-				game.checkNums();
-			}
+			System.out.println();
+			playerCheck = true;
+			game.checkNums();
 		}
 			
 	}
