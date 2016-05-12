@@ -2,70 +2,43 @@ package FarkleGame;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class gameBoard extends JFrame {
-
+	private ArrayList<Player> players = new ArrayList<Player>();
 	private JPanel contentPane;
 	private JTextField textField;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					gameBoard frame = new gameBoard();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	//called from main menu, creates the players, starts game
+	public gameBoard(String nameOne, String nameTwo, boolean buyIn) {
+		players.add(new Player(nameOne));
+		players.add(new Player(nameTwo));
+		createWindow();
+		
 	}
-
-	/**
-	 * Create the frame.
-	 */
-	public gameBoard() {
+	
+	private void createWindow() {
+		try{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e1) {
+				e1.printStackTrace();
+		}
+		
+		setTitle("Farkle");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 459, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JPanel panel = new JPanel();
-		panel.setBounds(24, 36, 57, 54);
-		contentPane.add(panel);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(91, 36, 57, 54);
-		contentPane.add(panel_1);
-		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(158, 36, 57, 54);
-		contentPane.add(panel_2);
-		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBounds(225, 36, 57, 54);
-		contentPane.add(panel_3);
-		
-		JPanel panel_4 = new JPanel();
-		panel_4.setBounds(292, 36, 57, 54);
-		contentPane.add(panel_4);
-		
-		JPanel panel_5 = new JPanel();
-		panel_5.setBounds(360, 36, 57, 54);
-		contentPane.add(panel_5);
 		
 		JLabel lblWhosTurn = new JLabel("whos turn");
 		lblWhosTurn.setBounds(24, 11, 138, 14);
@@ -116,12 +89,14 @@ public class gameBoard extends JFrame {
 		lblCount.setBounds(360, 197, 46, 14);
 		contentPane.add(lblCount);
 		
-		JButton btnRoll = new JButton("Roll");
+		JButton btnRoll = new JButton("Roll");0
 		btnRoll.setBounds(84, 227, 89, 23);
 		contentPane.add(btnRoll);
 		
 		JButton btnPass = new JButton("Pass");
 		btnPass.setBounds(260, 227, 89, 23);
 		contentPane.add(btnPass);
+		
+		validate();
 	}
 }
