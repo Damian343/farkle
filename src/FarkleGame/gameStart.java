@@ -30,11 +30,6 @@ public class gameStart extends JFrame {
 	private JTextField playerOneName;
 	private JTextField playerTwoName;
 
-	public void start(String nameOne, String nameTwo, boolean buyIn){
-		dispose();
-		new gameBoard(nameOne, nameTwo, buyIn);
-	}
-	
 	public gameStart() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 207, 250);
@@ -77,6 +72,12 @@ public class gameStart extends JFrame {
 			}
 		});
 	}
+	
+	public void start(String nameOne, String nameTwo, boolean buyIn){
+		dispose();
+		gameBoard gameBoard = new gameBoard(nameOne, nameTwo, buyIn);
+	}
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
