@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -19,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 public class gameBoard extends JFrame {
 	private ArrayList<Player> players = new ArrayList<Player>();
 	private ArrayList<String> picks = new ArrayList<String>();
+	private JFrame frame = new JFrame();
 	private JPanel contentPane;
 	private JTextField playerPicksField;
 	private int[] diceSides;
@@ -26,12 +28,11 @@ public class gameBoard extends JFrame {
 	private int currentPlayer;
 	private boolean buyIn;
 	private Random random;
+	private JButton btnPassTurn, btnRoll, btnTakePoints;
 	private JLabel[] diceLbls;
-	private JLabel combinationlbl, currentPlayerlbl;
+	private JLabel combinationlbl, currentPlayerlbl, lblScore;
 	private int numDice;
 	private String possibleOpts="";
-	
-	//NEED TO ADD POPUP DIALOG BOX CLASS TO SAY WETHER OR ROLL AGAIN
 	
 	//called from main menu, creates the players, starts game
 	public gameBoard(String nameOne, String nameTwo, boolean buyIn) {
@@ -60,7 +61,7 @@ public class gameBoard extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel playerScorelbl = new JLabel("Players Score");
-		playerScorelbl.setBounds(292, 122, 76, 14);
+		playerScorelbl.setBounds(292, 122, 65, 14);
 		contentPane.add(playerScorelbl);
 		
 		JLabel lblAvailableCombinations = new JLabel("Available Combinations: ");
@@ -91,7 +92,7 @@ public class gameBoard extends JFrame {
 		farkleCountlbl.setBounds(360, 197, 46, 14);
 		contentPane.add(farkleCountlbl);
 		
-		JButton btnRoll = new JButton("Roll");
+		btnRoll = new JButton("Roll");
 		btnRoll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				diceRoll();
@@ -143,11 +144,16 @@ public class gameBoard extends JFrame {
 		contentPane.add(playerPicksField);
 		playerPicksField.setColumns(10);
 		
-		JButton btnPassTurn = new JButton("Pass Turn");
+		btnPassTurn = new JButton("Pass Turn");
+		btnPassTurn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				passTurn();
+			}
+		});
 		btnPassTurn.setBounds(225, 227, 89, 23);
 		contentPane.add(btnPassTurn);
 		
-		JButton btnTakePoints = new JButton("Take points");
+		btnTakePoints = new JButton("Take points");
 		btnTakePoints.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				getPlayerPicks(playerPicksField.getText());
@@ -155,8 +161,29 @@ public class gameBoard extends JFrame {
 		});
 		btnTakePoints.setBounds(115, 227, 89, 23);
 		contentPane.add(btnTakePoints);
+		
+		lblScore = new JLabel("0");
+		lblScore.setBounds(367, 122, 46, 14);
+		contentPane.add(lblScore);
 		//messy need to clean
 		setVisible(true);
+	}
+	public void passTurn() {
+		playerChanger();
+		combinationlbl.setText("");
+		currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
+		lblScore.setText(Integer.toString(players.get(currentPlayer).getSetScore()));
+		resetDice();
+	}
+	public void resetDice() {
+		//blank out all labels
+	}
+	public void playerChanger() {
+		if(currentPlayer == 0){
+			currentPlayer++;
+		} else {
+			currentPlayer--;
+		}
 	}
 	//checks players numbers adds to set score
 	public void getPlayerPicks(String playerPicks) {
@@ -171,6 +198,26 @@ public class gameBoard extends JFrame {
 			if(picks.get(x).length() == 4){players.get(currentPlayer).setSetScore(1000);}
 			if(picks.get(x).length() == 5){players.get(currentPlayer).setSetScore(2000);}
 			if(picks.get(x).length() == 6){players.get(currentPlayer).setSetScore(3000);}
+		}
+		//have to turn off certain buttons not allowed to use
+		btnRoll.setVisible(true);
+		btnPassTurn.setVisible(true);
+		btnTakePoints.setVisible(false);
+		//passes how many dice are getting rid of
+		playerPicks = playerPicks.replaceAll("\\s","");
+		diceRemover(playerPicks.length());
+		//set point labels
+		combinationlbl.setText("");
+		lblScore.setText(Integer.toString(players.get(currentPlayer).getSetScore()));
+		
+	}
+	//removes total dice from players picks and checks to see if out of dice
+	public void diceRemover(int amount) {
+		if((numDice-amount) > 0){
+			numDice = numDice - amount;
+		} else {
+			JOptionPane.showMessageDialog(frame, "Cleared All Dice! roll all 6 again");
+			numDice = 6;
 		}
 	}
 	//checks to see if theres a straight available
@@ -236,6 +283,8 @@ public class gameBoard extends JFrame {
 		dice = new int[6];
 		diceSides = new int[6];
 		numDice = 6;
+		btnPassTurn.setVisible(false);
+		btnTakePoints.setVisible(false);
 		currentPlayer = random.nextInt(1);
 		currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
 	}
@@ -254,5 +303,8 @@ public class gameBoard extends JFrame {
 		System.out.println(Arrays.toString(diceSides));
 		checkNumbers();
 		combinationlbl.setText(possibleOpts);
+		btnRoll.setVisible(false);
+		btnTakePoints.setVisible(true);
+		btnPassTurn.setVisible(false);
 	}
 }
