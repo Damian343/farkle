@@ -1,11 +1,8 @@
 package FarkleGame;
 
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,7 +16,6 @@ import javax.swing.border.EmptyBorder;
 //each player class keeps track of score, random player is selected to go first
 public class gameBoard extends JFrame {
 	private ArrayList<Player> players = new ArrayList<Player>();
-	private ArrayList<String> picks = new ArrayList<String>();
 	private JFrame frame = new JFrame();
 	private JPanel contentPane;
 	private JTextField playerPicksField;
@@ -187,7 +183,7 @@ public class gameBoard extends JFrame {
 	}
 	//checks players numbers adds to set score
 	public void getPlayerPicks(String playerPicks) {
-		picks = (ArrayList<String>) Arrays.asList(playerPicks.split((" ")));
+		List<String> picks = (Arrays.asList(playerPicks.split(" ")));
 		for(int x=0; x < picks.size(); x++) {
 			// we have to add one because dice start at 1
 			/** HAVE TO FIX BECAUSE TAKES ONLY LENGTH AND NO CHECK **/
