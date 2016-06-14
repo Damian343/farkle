@@ -59,7 +59,7 @@ public class gameBoard extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel playerScorelbl = new JLabel("Players Score");
-		playerScorelbl.setBounds(292, 122, 65, 14);
+		playerScorelbl.setBounds(50, 182, 65, 14);
 		contentPane.add(playerScorelbl);
 		
 		JLabel lblAvailableCombinations = new JLabel("Available Combinations: ");
@@ -70,24 +70,16 @@ public class gameBoard extends JFrame {
 		combinationlbl.setBounds(158, 122, 124, 14);
 		contentPane.add(combinationlbl);
 		
-		JLabel lblAvailablePointsIn = new JLabel("Total Roll Score: ");
-		lblAvailablePointsIn.setBounds(40, 160, 89, 14);
-		contentPane.add(lblAvailablePointsIn);
-		
-		JLabel rollPointslbl = new JLabel("");
-		rollPointslbl.setBounds(158, 160, 76, 14);
-		contentPane.add(rollPointslbl);
-		
 		JLabel lblPleseSelectCombinations = new JLabel("Plese select dice");
-		lblPleseSelectCombinations.setBounds(38, 197, 89, 14);
+		lblPleseSelectCombinations.setBounds(40, 147, 89, 14);
 		contentPane.add(lblPleseSelectCombinations);
 		
 		JLabel lblFarkleCount = new JLabel("Farkle Count");
-		lblFarkleCount.setBounds(292, 197, 71, 14);
+		lblFarkleCount.setBounds(282, 182, 71, 14);
 		contentPane.add(lblFarkleCount);
 		
 		farkleCountlbl = new JLabel("");
-		farkleCountlbl.setBounds(360, 197, 46, 14);
+		farkleCountlbl.setBounds(351, 182, 46, 14);
 		contentPane.add(farkleCountlbl);
 		
 		btnRoll = new JButton("Roll");
@@ -138,7 +130,7 @@ public class gameBoard extends JFrame {
 		contentPane.add(btnAvailableComobs);
 		
 		playerPicksField= new JTextField();
-		playerPicksField.setBounds(148, 194, 86, 20);
+		playerPicksField.setBounds(128, 147, 86, 20);
 		contentPane.add(playerPicksField);
 		playerPicksField.setColumns(10);
 		
@@ -161,15 +153,12 @@ public class gameBoard extends JFrame {
 		contentPane.add(btnTakePoints);
 		
 		lblScore = new JLabel("0");
-		lblScore.setBounds(367, 122, 46, 14);
+		lblScore.setBounds(125, 182, 46, 14);
 		contentPane.add(lblScore);
 		//messy need to clean
 		setVisible(true);
 	}
 
-	public void passPoints() {
-		
-	}
 	//Pass turn when you farkle has to be different
 	public void FarklePassTurn() {
 	}
@@ -205,8 +194,10 @@ public class gameBoard extends JFrame {
 		playerPicks = playerPicks.replaceAll("\\s","");
 		diceRemover(playerPicks.length());
 		//set point labels
-		combinationlbl.setText("");
-		lblScore.setText(Integer.toString(players.get(currentPlayer).getSetScore()));
+		combinationlbl.setText(" ");
+		lblScore.setText(Integer.toString(setScore));
+		playerPicksField.setText(" ");
+		//set numdice
 		
 	}
 	//removes total dice from players picks and checks to see if out of dice
@@ -217,6 +208,11 @@ public class gameBoard extends JFrame {
 			JOptionPane.showMessageDialog(frame, "Cleared All Dice! roll all 6 again");
 			numDice = 6;
 		}
+		System.out.print(numDice);
+		for(int n=numDice; n < 6; n++) {
+			diceLbls[n].setIcon(new ImageIcon("C:\\Uesrs\\damian\\Desktop\\lab11\\dice1.png"));
+		}
+		possibleOpts="";
 	}
 	//checks to see if theres a straight available
 	public boolean straightCheck(){
@@ -242,10 +238,13 @@ public class gameBoard extends JFrame {
 	}
 	//checks to see if two triplets
 	public void twoTripletCheck(){
+		int tripCount=0;
 		for(int n=0; n < numDice; n++) {
 			//if 3 of one number add to possible opts
-			if (diceSides[n] == 3) { possibleOpts += Integer.toString(n)+Integer.toString(n)+Integer.toString(n); setScore += 2500;}
+			if (diceSides[n] == 3) { tripCount++; possibleOpts += Integer.toString(n)+Integer.toString(n)+Integer.toString(n);}
 		}
+		if(tripCount==2) { possibleOpts += ", "; setScore += 2500; }
+		else { possibleOpts = " "; } 
 	}
 	//gets possible options available
 	public void checkNumbers() {
@@ -285,9 +284,11 @@ public class gameBoard extends JFrame {
 		btnTakePoints.setVisible(false);
 		currentPlayer = random.nextInt(1);
 		currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
+		farkleCountlbl.setText("0");
 	}
 	//sets diceSides and dice and images, checks number and sets options label
 	public void diceRoll() {
+		Arrays.fill(diceSides, 0); Arrays.fill(dice, 0);
 		int n=0;
 		String neededImage="";
 		for(int x=0; x < numDice; x++) {
