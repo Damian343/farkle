@@ -25,11 +25,13 @@ public class Player {
 	public String getPicks(){
 		return picks;
 	}
+	public void resetFarkle() {
+		farkleCount = 0;
+	}
 	public int getFarkleCount(){
 		return farkleCount;
 	}
-	public int incrementFarkle(){
+	public void incrementFarkle(){
 		farkleCount++;
-		return farkleCount;
 	}
 }

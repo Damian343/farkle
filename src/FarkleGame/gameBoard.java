@@ -158,12 +158,13 @@ public class gameBoard extends JFrame {
 		//messy need to clean
 		setVisible(true);
 	}
-
-	//Pass turn when you farkle has to be different
-	public void FarklePassTurn() {
-	}
+//Pass turn when you farkle has to be different
 	public void resetDice() {
-		//blank out all labels
+		//blank out all label
+		numDice = 6;
+		for(int x=0; x < numDice; x++) {
+			diceLbls[x].setIcon(new ImageIcon("C:\\Users\\damian\\Desktop\\lab11\\dice1.png"));
+		}
 	}
 	public void playerChanger() {
 		if(currentPlayer == 0){
@@ -181,7 +182,10 @@ public class gameBoard extends JFrame {
 			if(picks.get(x)=="123456"){setScore += 1500;}
 			if(Integer.parseInt(picks.get(x)) == 1){setScore += 100;}
 			if(Integer.parseInt(picks.get(x)) == 5){setScore += 50;}
-			if(picks.get(x).length() == 3){setScore += (Integer.parseInt(picks.get(x))) * 100; }
+			if(picks.get(x).length() == 3){
+				if(Integer.parseInt(picks.get(x).indexOf(0)) == 1) { setScore += 300; }
+				else {setScore += (Integer.parseInt(picks.get(x).indexOf(0))) * 100;}
+			}
 			if(picks.get(x).length() == 4){setScore += 1000;}
 			if(picks.get(x).length() == 5){setScore += 2000;}
 			if(picks.get(x).length() == 6){setScore += 3000;}
@@ -204,13 +208,13 @@ public class gameBoard extends JFrame {
 	public void diceRemover(int amount) {
 		if((numDice-amount) > 0){
 			numDice = numDice - amount;
+			for(int n=numDice; n >= 0; n--) {
+				diceLbls[n].setIcon(new ImageIcon("C:\\Uesrs\\damian\\Desktop\\lab11\\dice1.png"));
+			}
 		} else {
-			JOptionPane.showMessageDialog(frame, "Cleared All Dice! roll all 6 again");
+			JOptionPane.showMessageDialog(frame, "Cleared All Dice! roll all again \n current set score: " + setScore);
 			numDice = 6;
-		}
-		System.out.print(numDice);
-		for(int n=numDice; n < 6; n++) {
-			diceLbls[n].setIcon(new ImageIcon("C:\\Uesrs\\damian\\Desktop\\lab11\\dice1.png"));
+			resetDice();
 		}
 		possibleOpts="";
 	}
@@ -254,18 +258,21 @@ public class gameBoard extends JFrame {
 			pairCheck();
 			twoTripletCheck();
 			if(straightCheck()){ possibleOpts += "123456"; } 
-		}
+		} else {
 		//checks for triplets, quads, fives and sixes 
-		for(int x=0; x < numDice; x++) {
-			// we have to add one because dice start at 1
-			nums = Integer.toString(x + 1);
-			if(dice[x] == 1) {possibleOpts+= " 1, ";}
-			if(dice[x] == 5) {possibleOpts += " 5, ";}
-			if(diceSides[x] == 3){possibleOpts += nums+nums+nums+", ";}
-			if(diceSides[x] == 4) {possibleOpts += nums+nums+nums+nums+", ";}
-			if(diceSides[x] == 5) {possibleOpts += nums+nums+nums+nums+nums+", ";}
-			if(diceSides[x] == 6) {possibleOpts += nums+nums+nums+nums+nums+nums+", ";}
+			for(int x=0; x < numDice; x++) {
+				// we have to add one because dice start at 1
+				nums = Integer.toString(x + 1);
+				if(dice[x] == 1) {possibleOpts+= " 1, ";}
+				if(dice[x] == 5) {possibleOpts += " 5, ";}
+				if(diceSides[x] == 3){possibleOpts += nums+nums+nums+", ";}
+				//add 4 and pair combo
+				if(diceSides[x] == 4) {possibleOpts += nums+nums+nums+nums+", ";}
+				if(diceSides[x] == 5) {possibleOpts += nums+nums+nums+nums+nums+", ";}
+				if(diceSides[x] == 6) {possibleOpts += nums+nums+nums+nums+nums+nums+", ";}
+			}
 		}
+		if(possibleOpts == " ") { farkled(); }
 	}
 	//need 500 points in order to start adding to score
 	public void buyInNewGame() {
@@ -273,7 +280,21 @@ public class gameBoard extends JFrame {
 	}
 	//no possible combinations was acquired
 	public void farkled() {
-		
+		players.get(currentPlayer).incrementFarkle();
+		if(players.get(currentPlayer).getFarkleCount() == 3) { /*3 farkles reset score completely no buy back in */ 
+			
+			players.get(currentPlayer).setScore(0);
+			players.get(currentPlayer).resetFarkle();
+			
+		}
+			 //basically a pass turn with no context dialog box
+		 playerChanger();
+		 combinationlbl.setText("");
+		 currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
+		 setScore=0;
+		 lblScore.setText(Integer.toString(setScore));
+		 farkleCountlbl.setText(parseInt(players.get(currentPlayer).getFarkleCount()));
+		 resetDice();
 	}
 	//creates new game sets scores number dice also labels no 500 point buy in
 	public void newGame() {
@@ -310,17 +331,23 @@ public class gameBoard extends JFrame {
 	public void passTurn() {
 		//see if player wants to continue 
 		int n = JOptionPane.showOptionDialog(frame, "Would you like to Continue from previous Player(Points/num dice)", "Pass Turn", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		players.get(currentPlayer).resetFarkle();
+		//NEED TO CHANGE PLAYER CLASS TO ALLOW += SCORE//
+		players.get(currentPlayer).setScore(setScore);
+		
 		if(n == 0){
 			playerChanger();
 			combinationlbl.setText("");
 			currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
+			setScore=0;
+			farkleCountlbl.setText(parseInt(players.get(currentPlayer).getFarkleCount()));
 			lblScore.setText(Integer.toString(setScore));
 			resetDice();
 		} else { /*need to keep score for next player and do not change number of dice*/
-			farkleCountlbl.setText("0");
 			playerChanger();
+			farkleCountlbl.setText(parseInt(players.get(currentPlayer).getFarkleCount()));
 			currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
-			lblScore.setText(Integer.toString(setScore));
+			possibleOpts="";
 		}
 	}
 }
