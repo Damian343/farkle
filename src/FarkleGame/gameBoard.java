@@ -182,7 +182,9 @@ public class gameBoard extends JFrame {
 	public void getPlayerPicks(String playerPicks) {
 		System.out.println("picks before anything " + playerPicks);
 		List<String> picks = (Arrays.asList(playerPicks.split("\\s+")));
-		List<String> opts = (Arrays.asList(possibleOpts.split("\\s+")));
+		List<String> opts = new LinkedList (Arrays.asList(possibleOpts.split("\\s+")));
+		
+		
 		if(checkPickValidity(picks, opts)) { 
 			for(int x=0; x < picks.size(); x++) {
 				// we have to add one because dice start at 1
@@ -217,7 +219,26 @@ public class gameBoard extends JFrame {
 	}
 	public boolean checkPickValidity(List<String> picks, List<String> opts) {
 		int numCheck = 0;
-		System.out.println(opts);
+		if(diceSides[0] == 2){ 
+			opts.remove("1");
+			/*
+			for(int i=0; i < opts.size(); i++){
+				if(Integer.parseInt(opts.get(i)) == 1){
+					opts.remove(i);
+					break;
+				}
+			}*/
+		}
+		if(diceSides[4] == 2){ 
+			opts.remove("5");
+			/*
+			for(int i=0; i < opts.size(); i++){
+				if(Integer.parseInt(opts.get(i)) == 5){
+					opts.remove();
+					break;
+				}
+			}*/
+		}
 		System.out.println(picks);
 		for(int x=0; x < picks.size(); x++) {
 			for(int y=0; y < opts.size(); y++){
@@ -293,7 +314,6 @@ public class gameBoard extends JFrame {
 				if(diceSides[x] == 5) {possibleOpts += nums+nums+nums+nums+nums+" ";}
 				if(diceSides[x] == 6) {possibleOpts += nums+nums+nums+nums+nums+nums+" ";}
 		}
-		if(possibleOpts == "") { farkled(); }
 	}
 	/*NEED TO FINISH*/
 	public void buyInNewGame() {
@@ -311,16 +331,16 @@ public class gameBoard extends JFrame {
 	public void farkled() {
 		players.get(currentPlayer).incrementFarkle();
 		JOptionPane.showMessageDialog(frame, "You Farkled!" );
+		
 		if (players.get(currentPlayer).getFarkleCount() == 3) { /*3 farkles reset score completely no buy back in */ 
 			players.get(currentPlayer).setScore(0);
 			players.get(currentPlayer).resetFarkle();
 		}
-		 //basically a pass turn with no context dialog box
+		
 		 playerChanger();
 		 //change buttons
 		 btnRoll.setVisible(true);
 		 btnTakePoints.setVisible(false);
-		 
 		 combinationlbl.setText("");
 		 currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
 		 setScore=0;
@@ -354,20 +374,30 @@ public class gameBoard extends JFrame {
 		System.out.println(Arrays.toString(dice));
 		System.out.println(Arrays.toString(diceSides));
 		checkNumbers();
-		combinationlbl.setText(possibleOpts);
-		btnRoll.setVisible(false);
-		btnTakePoints.setVisible(true);
-		btnPassTurn.setVisible(false);
+		//see if there is any combo
+		if(possibleOpts == "") { farkled(); }
+		else {
+			combinationlbl.setText(possibleOpts);
+			btnRoll.setVisible(false);
+			btnTakePoints.setVisible(true);
+			btnPassTurn.setVisible(false);
+		}
 	}
 	
 	public void passTurn() {
 		//see if player wants to continue 
 		int n = JOptionPane.showOptionDialog(frame, "Would you like to Continue from previous Player(Points/num dice)", "Pass Turn", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		System.out.println(n);
 		players.get(currentPlayer).resetFarkle();
 		//NEED TO CHANGE PLAYER CLASS TO ALLOW += SCORE//
 		players.get(currentPlayer).setScore(setScore);
 		if(players.get(currentPlayer).getScore() >= 10000) { endGame(); }
 		if(n == 0){
+			playerChanger();
+			farkleCountlbl.setText(Integer.toString(players.get(currentPlayer).getFarkleCount()));
+			currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
+			possibleOpts="";
+		} else { /*need to keep score for next player and do not change number of dice*/
 			playerChanger();
 			combinationlbl.setText("");
 			currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
@@ -375,11 +405,6 @@ public class gameBoard extends JFrame {
 			farkleCountlbl.setText(Integer.toString((players.get(currentPlayer).getFarkleCount())));
 			lblScore.setText(Integer.toString(setScore));
 			resetDice();
-		} else { /*need to keep score for next player and do not change number of dice*/
-			playerChanger();
-			farkleCountlbl.setText(Integer.toString(players.get(currentPlayer).getFarkleCount()));
-			currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
-			possibleOpts="";
 		}
 	}
 	public void endGame() {
