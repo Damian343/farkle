@@ -11,6 +11,9 @@ public class Player {
 	public void setScore(int totalScore) {
 		this.totalScore = totalScore;
 	}
+	public void incrementScore(int increment){
+		totalScore += increment;
+	}
 	public int getScore() {
 		return totalScore;
 	}
