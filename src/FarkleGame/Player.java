@@ -1,9 +1,9 @@
 package FarkleGame;
 
-public class Player {
-	public String name;
-	public int totalScore = 0;
-	public int farkleCount = 0;
+class Player {
+	private final String name;
+	private int totalScore = 0;
+	private int farkleCount = 0;
 
 	public Player(String name) {
 		this.name = name;

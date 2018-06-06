@@ -1,26 +1,30 @@
 package FarkleGame;
-import java.util.*;
 
-public class FarkleGame {
-	static int[] dice;
-	static int[] diceSides; //how many of each side is rolled 
-	static int numDice = 6;
-	int score = 0;		//total points acquired in total by player 
-	static int totalScore = 0; //amount of points in  current "set" 
-	int possibleScore = 0; //total points possible in current "roll"
-	String possibleOpts = ""; //possible number combinations
-	static String playerPicks = "";
-	List<String> playerNumbers;
-	static boolean playerCheck = false;
-	static int farkleCounter = 0;
-	static int pairCount = 0;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
-	public FarkleGame() {
+class FarkleGame {
+	private static int[] dice;
+	private static int[] diceSides; //how many of each side is rolled
+	private static int numDice = 6;
+	private int score = 0;		//total points acquired in total by player
+	private static int totalScore = 0; //amount of points in  current "set"
+	private int possibleScore = 0; //total points possible in current "roll"
+	private String possibleOpts = ""; //possible number combinations
+	private static String playerPicks = "";
+	private List<String> playerNumbers;
+	private static boolean playerCheck = false;
+	private static int farkleCounter = 0;
+	private static int pairCount = 0;
+
+	private FarkleGame() {
 		dice = new int[6];
 		diceSides = new int[6];
 	}
 	
-	public void quickSort(int low, int high) {
+	private void quickSort(int low, int high) {
 		if (dice == null || dice.length == 0)
 			return;
  
@@ -59,7 +63,7 @@ public class FarkleGame {
 			quickSort(i, high);
 	}
 	
-	public void print() {
+	private void print() {
 		System.out.print("| ");
 		for(int i=0; i < numDice; i++) {
 			System.out.print(dice[i] + " | ");
@@ -70,7 +74,7 @@ public class FarkleGame {
 		System.out.println("Total score: " + totalScore);
 	}
 	
-	public void diceRoll() {
+	private void diceRoll() {
 		Random rnd = new Random();
 		int n = 0;
 		for(int x=0; x < numDice; x++) {
@@ -80,7 +84,7 @@ public class FarkleGame {
 		}
 	}
 	
-	public boolean farkled() {
+	private boolean farkled() {
 		//if no options we farkled, add one to counter and reset (if 3 farkles in row score back to 0)
 		if(possibleOpts == " ") {
 			if(farkleCounter+1 == 3){
@@ -101,7 +105,7 @@ public class FarkleGame {
 			return true;
 		} else { return false; }
 	}
-	public void passTurn() {
+	private void passTurn() {
 		//if turn passed reset possibles, dice to 6, add set score to total
 		possibleScore=0; possibleOpts="";
 		numDice = 6;
@@ -111,7 +115,7 @@ public class FarkleGame {
 		playerCheck = false;
 		System.out.println("\nneed 10'000 to win you have: "  + score + "\n");
 	}
-	public boolean straightCheck(){
+	private boolean straightCheck(){
 		for(int x=0; x<6; x++){
 			if(diceSides[x] != 1){
 				return false;
@@ -120,7 +124,7 @@ public class FarkleGame {
 		return true;
 	}
 	//add ability for player to add 3 pairs, 2 triplets, straight, 4 of any num then pair
-	public void checkNums() {
+	private void checkNums() {
 		String nums = " ";
 		String pairs = " ";
 		if(!playerCheck){
@@ -235,7 +239,7 @@ public class FarkleGame {
 			}
 	}
 	
-	public void setEnd(){
+	private void setEnd(){
 		playerPicks = playerPicks.replaceAll("\\s","");
 		if((numDice-playerPicks.length()) > 0){
 			if(playerPicks.length() > 1) { numDice = numDice - playerPicks.length(); }

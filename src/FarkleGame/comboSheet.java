@@ -3,18 +3,16 @@ package FarkleGame;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-public class comboSheet extends JFrame{
+class comboSheet extends JFrame{
 
-	private JPanel contentPane;
-
-	public comboSheet() {
+    public comboSheet() {
 		try{
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e1) {
 				e1.printStackTrace();
 		}
-		contentPane = new JPanel();
-		setBounds(100, 100, 194, 200);
+        JPanel contentPane = new JPanel();
+		setBounds(100, 100, 250, 175);
 		contentPane.setBorder(new EmptyBorder(5,5,5,5));
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setContentPane(contentPane);

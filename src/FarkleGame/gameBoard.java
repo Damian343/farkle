@@ -2,19 +2,20 @@ package FarkleGame;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
+import java.util.List;
+
 //each player class keeps track of score, random player is selected to go first
-public class gameBoard extends JFrame {
-	private ArrayList<Player> players = new ArrayList<Player>();
-	private JFrame frame = new JFrame();
-	private JPanel contentPane;
-	private JTextField playerPicksField;
+class gameBoard extends JFrame {
+	private final ArrayList<Player> players = new ArrayList<Player>();
+	private final JFrame frame = new JFrame();
+    private JTextField playerPicksField;
 	private int[] diceSides;
 	private int[] dice;
 	private int currentPlayer;
-	private boolean buyIn;
-	private Random random;
+    private final Random random;
 	private JButton btnPassTurn, btnRoll, btnTakePoints;
 	private JLabel[] diceLbls;
 	private int setScore;
@@ -23,12 +24,12 @@ public class gameBoard extends JFrame {
 	private StringBuilder possibleOpts;
 	
 	//called from main menu, creates the players, starts game
-	public gameBoard(String nameOne, String nameTwo, boolean buyIn) {
+    gameBoard(String nameOne, String nameTwo, boolean buyIn) {
 		setTitle("Farkle");
 		players.add(new Player(nameOne));
 		players.add(new Player(nameTwo));
 		setScore = 0;
-		this.buyIn = buyIn;
+        boolean buyIn1 = buyIn;
 		random = new Random(); 
 		createWindow();
 		//figure out wether need 500 points to start
@@ -41,10 +42,12 @@ public class gameBoard extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
+		Font font = new Font(Font.MONOSPACED, Font.BOLD, 16);
+
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(100, 100, 459, 300);
-		contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -58,11 +61,11 @@ public class gameBoard extends JFrame {
 		contentPane.add(lblAvailableCombinations);
 		
 		combinationlbl = new JLabel("");
-		combinationlbl.setBounds(158, 122, 124, 14);
+		combinationlbl.setBounds(158, 122, 124, 20 );
 		contentPane.add(combinationlbl);
 		
-		JLabel lblPleseSelectCombinations = new JLabel("Plese select dice");
-		lblPleseSelectCombinations.setBounds(40, 147, 89, 14);
+		JLabel lblPleseSelectCombinations = new JLabel("Dice Selection: ");
+		lblPleseSelectCombinations.setBounds(50, 150, 89, 14);
 		contentPane.add(lblPleseSelectCombinations);
 		
 		JLabel lblFarkleCount = new JLabel("Farkle Count");
@@ -79,32 +82,34 @@ public class gameBoard extends JFrame {
 		contentPane.add(btnRoll);
 		
 		diceLbls = new JLabel[6];
+
 		diceLbls[0] = new JLabel("");
-		diceLbls[0].setBounds(24, 46, 46, 42);
+		diceLbls[0].setBounds(20, 46, 46, 42);
 		contentPane.add(diceLbls[0]);
 		
 		diceLbls[1] = new JLabel("");
-		diceLbls[1].setBounds(97, 46, 46, 42);
+		diceLbls[1].setBounds(92, 46, 46, 42);
 		contentPane.add(diceLbls[1]);
 		
 		diceLbls[2] = new JLabel("");
-		diceLbls[2].setBounds(169, 46, 46, 42);
+		diceLbls[2].setBounds(164, 46, 46, 42);
 		contentPane.add(diceLbls[2]);
 		
 		diceLbls[3] = new JLabel("");
-		diceLbls[3].setBounds(237, 46, 46, 42);
+		diceLbls[3].setBounds(236, 46, 46, 42);
 		contentPane.add(diceLbls[3]);
 		
 		diceLbls[4] = new JLabel("");
-		diceLbls[4].setBounds(303, 46, 46, 42);
+		diceLbls[4].setBounds(308, 46, 46, 42);
 		contentPane.add(diceLbls[4]);
 		
 		diceLbls[5] = new JLabel("");
-		diceLbls[5].setBounds(372, 46, 46, 42);
+		diceLbls[5].setBounds(380, 46, 46, 42);
 		contentPane.add(diceLbls[5]);
 		
 		currentPlayerlbl = new JLabel("");
-		currentPlayerlbl.setBounds(158, 21, 125, 14);
+		currentPlayerlbl.setFont(font);
+		currentPlayerlbl.setBounds(10, 15, 500, 20);
 		contentPane.add(currentPlayerlbl);
 		
 		JButton btnAvailableComobs = new JButton("Combinations");
@@ -123,7 +128,11 @@ public class gameBoard extends JFrame {
 		contentPane.add(btnPassTurn);
 		
 		btnTakePoints = new JButton("Take points");
-		btnTakePoints.addActionListener((ActionEvent e) -> getPlayerPicks(playerPicksField.getText()));
+		btnTakePoints.addActionListener((ActionEvent e) -> {
+			String text = playerPicksField.getText();
+			if(text.equals("")) return;
+			else getPlayerPicks(text);
+		});
 		btnTakePoints.setBounds(115, 227, 89, 23);
 		contentPane.add(btnTakePoints);
 		
@@ -135,26 +144,27 @@ public class gameBoard extends JFrame {
 		lblPlayerTotal.setBounds(282, 122, 65, 14);
 		contentPane.add(lblPlayerTotal);
 		
-		playerTotal = new JLabel("");
+		playerTotal = new JLabel("0");
 		playerTotal.setBounds(351, 122, 46, 14);
 		contentPane.add(playerTotal);
 		//messy need to clean
 		setVisible(true);
+		resetDice();
 	}
 
-	public void getCombos() {
+	private void getCombos() {
 		comboSheet combos = new comboSheet();
 	}
 	//Pass turn when you farkle has to be different
-	public void resetDice() {
+    private void resetDice() {
 		//blank out all label
-		numDice = 6;
+		numDice = diceLbls.length;
 		for(int x=0; x < numDice; x++) {
-			diceLbls[x].setIcon(new ImageIcon("images\\headline-lockup.png"));
+			diceLbls[x].setIcon(new ImageIcon("src\\images\\dice1.png"));
 		}
 	}
 
-	public void playerChanger() {
+	private void playerChanger() {
 		if(currentPlayer == 0){
 			currentPlayer++;
 		} else {
@@ -162,26 +172,41 @@ public class gameBoard extends JFrame {
 		}
 	}
 	//checks players numbers adds to set score
-	public void getPlayerPicks(String playerPicks) {
+    private void getPlayerPicks(String playerPicks) {
 		System.out.println("picks before anything " + playerPicks);
 		List<String> picks = (Arrays.asList(playerPicks.split("\\s+")));
 		List<String> opts = new LinkedList<>(Arrays.asList(possibleOpts.toString().split("\\s+")));
 		
 		
-		if(checkPickValidity(picks, opts)) { 
-			for(int x=0; x < picks.size(); x++) {
-				// we have to add one because dice start at 1
-				if(picks.get(x).equals("123456")){setScore += 1500;}
-				if(Integer.parseInt(picks.get(x)) == 1){setScore += 100;}
-				if(Integer.parseInt(picks.get(x)) == 5){setScore += 50;}
-				if(picks.get(x).length() == 3){
-					if(picks.get(x).substring(0, 1).equals("1")) {setScore += 300;}
-					else {setScore += Integer.parseInt(picks.get(x).substring(0, 1)) * 100;}
-				}
-				if(picks.get(x).length() == 4){setScore += 1000;}
-				if(picks.get(x).length() == 5){setScore += 2000;}
-				if(picks.get(x).length() == 6){setScore += 3000;}
-			}
+		if(checkPickValidity(picks, opts)) {
+            for (String pick : picks) {
+                // we have to add one because dice start at 1
+                if (pick.equals("123456")) {
+                    setScore += 1500;
+                }
+                if (Integer.parseInt(pick) == 1) {
+                    setScore += 100;
+                }
+                if (Integer.parseInt(pick) == 5) {
+                    setScore += 50;
+                }
+                if (pick.length() == 3) {
+                    if (pick.substring(0, 1).equals("1")) {
+                        setScore += 300;
+                    } else {
+                        setScore += Integer.parseInt(pick.substring(0, 1)) * 100;
+                    }
+                }
+                if (pick.length() == 4) {
+                    setScore += 1000;
+                }
+                if (pick.length() == 5) {
+                    setScore += 2000;
+                }
+                if (pick.length() == 6) {
+                    setScore += 3000;
+                }
+            }
 			//have to turn off certain buttons not allowed to use
 			btnRoll.setVisible(true);
 			btnPassTurn.setVisible(true);
@@ -201,7 +226,7 @@ public class gameBoard extends JFrame {
 		}
 	}
 
-	public boolean checkPickValidity(List<String> picks, List<String> opts) {
+	private boolean checkPickValidity(List<String> picks, List<String> opts) {
 		int numCheck = 0;
 		if(diceSides[0] == 2){ 
 			opts.remove("1");
@@ -224,15 +249,17 @@ public class gameBoard extends JFrame {
 			}*/
 		}
 		System.out.println(picks);
-		for(int x=0; x < picks.size(); x++) {
-			for(int y=0; y < opts.size(); y++){
-				if(Integer.parseInt(picks.get(x)) == Integer.parseInt(opts.get(y))) { numCheck++; }
-			}
-		}
+        for (String pick : picks) {
+            for (String opt : opts) {
+                if (Integer.parseInt(pick) == Integer.parseInt(opt)) {
+                    numCheck++;
+                }
+            }
+        }
         return numCheck == picks.size();
 	}
 	//removes total dice from players picks and checks to see if out of dice
-	public void diceRemover(int amount) {
+    private void diceRemover(int amount) {
 		if((numDice-amount) > 0){
 			numDice = numDice - amount;
 			for(int n=numDice; n < 6; n++) {
@@ -244,8 +271,8 @@ public class gameBoard extends JFrame {
 			resetDice();
 		}
 	}
-	//checks to see if theres a straight available
-	public boolean straightCheck(){
+	//checks to see if there is a straight available
+    private boolean straightCheck(){
 		for(int x=0; x<6; x++){
 			if(diceSides[x] != 1){
 				return false;
@@ -254,30 +281,32 @@ public class gameBoard extends JFrame {
 		return true;
 	}
 	//checks if three pairs available
-	public void pairCheck() {
+    private void pairCheck() {
 		int pairCount=0;
 		String pairs="";
 		
 		for(int x=0; x<6; x++) {
 			if(diceSides[x] == 2){
 				pairCount++;
-				pairs.concat(Integer.toString(x+1)+Integer.toString(x+1));
+				pairs += Integer.toString(x+1)+Integer.toString(x+1);
 			}
 		}
-		if(pairCount == 3){ possibleOpts.append(pairs+" "); setScore += 1500; }
+		System.out.println(pairs);
+		if(pairCount == 3){ possibleOpts.append(pairs).append(" "); setScore += 1500; }
 	}
 	//checks to see if two triplets
-	public void twoTripletCheck(){
+    private void twoTripletCheck(){
 		int tripCount=0;
 		for(int n=0; n < numDice; n++) {
 			//if 3 of one number add to possible opts
-			if (diceSides[n] == 3) { tripCount++; possibleOpts.append(Integer.toString(n)+Integer.toString(n)+Integer.toString(n));}
+			String num = Integer.toString(n);
+			if (diceSides[n] == 3) { tripCount++; possibleOpts.append(num).append(num).append(num);}
 		}
 		if(tripCount==2) { possibleOpts.append(" "); setScore += 2500; }
-		else { possibleOpts.setLength(0); }
+		else { possibleOpts = new StringBuilder(); }
 	}
 	//gets possible options available
-	public void checkNumbers() {
+    private void checkNumbers() {
 		String nums="";
 		//gets rid of redundency only runs if 6 dice available
 		if(numDice == 6){
@@ -289,17 +318,30 @@ public class gameBoard extends JFrame {
 		for(int x=0; x < numDice; x++) {
 				// we have to add one because dice start at 1
 				nums = Integer.toString(x + 1);
+				String currString = "";
 				if(dice[x] == 1) {possibleOpts.append("1 ");}
 				if(dice[x] == 5) {possibleOpts.append("5 ");}
-				if(diceSides[x] == 3){possibleOpts.append(nums+nums+nums+" ");}
+				if(diceSides[x] == 3){
+				    currString = nums+nums+nums+" ";
+				    possibleOpts.append(currString);
+				}
 				//add 4 and pair combo
-				if(diceSides[x] == 4) {possibleOpts.append(nums+nums+nums+nums+" ");}
-				if(diceSides[x] == 5) {possibleOpts.append(nums+nums+nums+nums+nums+" ");}
-				if(diceSides[x] == 6) {possibleOpts.append(nums+nums+nums+nums+nums+nums+" ");}
+				if(diceSides[x] == 4) {
+                    currString = nums+nums+nums+nums+" ";
+                    possibleOpts.append(currString);
+				}
+				if(diceSides[x] == 5) {
+				    currString = nums+nums+nums+nums+nums+" ";
+				    possibleOpts.append(currString);
+				}
+				if(diceSides[x] == 6) {
+				    currString = nums+nums+nums+nums+nums+nums+" ";
+				    possibleOpts.append(currString);
+				}
 		}
 	}
 	/*NEED TO FINISH*/
-	public void buyInNewGame() {
+    private void buyInNewGame() {
 		dice = new int[6];
 		diceSides = new int[6];
 		numDice = 6;
@@ -311,7 +353,7 @@ public class gameBoard extends JFrame {
 		}
 	}
 	//no possible combinations was acquired
-	public void farkled() {
+    private void farkled() {
 		players.get(currentPlayer).incrementFarkle();
 		JOptionPane.showMessageDialog(frame, "You Farkled!" );
 		
@@ -333,7 +375,7 @@ public class gameBoard extends JFrame {
 		 resetDice();
 	}
 	//creates new game sets scores number dice also labels no 500 point buy in
-	public void newGame() {
+    private void newGame() {
 		dice = new int[6];
 		diceSides = new int[6];
 		numDice = 6;
@@ -344,7 +386,7 @@ public class gameBoard extends JFrame {
 		farkleCountlbl.setText("0");
 	}
 	//sets diceSides and dice and images, checks number and sets options label
-	public void diceRoll() {
+    private void diceRoll() {
 		Arrays.fill(diceSides, 0); Arrays.fill(dice, 0);
 		int n;
 		String neededImage;
@@ -370,7 +412,7 @@ public class gameBoard extends JFrame {
 		}
 	}
 	
-	public void passTurn() {
+	private void passTurn() {
 		//see if player wants to continue 
 		int n = JOptionPane.showOptionDialog(frame, "Would you like to Continue from previous Player(Points/num dice)", "Pass Turn", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 		System.out.println(n);
@@ -396,13 +438,13 @@ public class gameBoard extends JFrame {
 		}
 	}
 
-	public void endGame() {
+	private void endGame() {
 		JOptionPane.showMessageDialog(frame, "Congratulations, " + players.get(currentPlayer).getName() + " You have won!\n"
 				+ "with a total score of " + players.get(currentPlayer).getScore() + " points");
 		resetGame();
 	}
 	//call when player wins to reset
-	public void resetGame(){
+    private void resetGame(){
 		Arrays.fill(diceSides, 0); Arrays.fill(dice, 0);
 		
 	}
