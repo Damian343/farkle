@@ -9,18 +9,22 @@ import java.util.List;
 
 //each player class keeps track of score, random player is selected to go first
 class gameBoard extends JFrame {
-	private final ArrayList<Player> players = new ArrayList<Player>();
+	//gui elements
 	private final JFrame frame = new JFrame();
     private JTextField playerPicksField;
+	private JButton btnPassTurn, btnRoll, btnTakePoints;
+	private JLabel combinationlbl, curPlayerlbl, lblScore, farkleCountlbl, playerTotal;
+	private JLabel[] diceLbls;
+
 	private int[] diceSides;
 	private int[] dice;
-	private int currentPlayer;
-    private final Random random;
-	private JButton btnPassTurn, btnRoll, btnTakePoints;
-	private JLabel[] diceLbls;
-	private int setScore;
-	private JLabel combinationlbl, currentPlayerlbl, lblScore, farkleCountlbl, playerTotal;
 	private int numDice;
+
+	private final ArrayList<Player> players = new ArrayList<Player>();
+	private int currentPlayer;
+	private int curSetScore;
+    private Random random;
+
 	private StringBuilder possibleOpts;
 	
 	//called from main menu, creates the players, starts game
@@ -28,7 +32,7 @@ class gameBoard extends JFrame {
 		setTitle("Farkle");
 		players.add(new Player(nameOne));
 		players.add(new Player(nameTwo));
-		setScore = 0;
+		curSetScore = 0;
         boolean buyIn1 = buyIn;
 		random = new Random(); 
 		createWindow();
@@ -107,10 +111,10 @@ class gameBoard extends JFrame {
 		diceLbls[5].setBounds(380, 46, 46, 42);
 		contentPane.add(diceLbls[5]);
 		
-		currentPlayerlbl = new JLabel("");
-		currentPlayerlbl.setFont(font);
-		currentPlayerlbl.setBounds(10, 15, 500, 20);
-		contentPane.add(currentPlayerlbl);
+		curPlayerlbl = new JLabel("");
+		curPlayerlbl.setFont(font);
+		curPlayerlbl.setBounds(10, 15, 500, 20);
+		contentPane.add(curPlayerlbl);
 		
 		JButton btnAvailableComobs = new JButton("Combinations");
 		btnAvailableComobs.addActionListener((ActionEvent e) -> getCombos());
@@ -182,29 +186,29 @@ class gameBoard extends JFrame {
             for (String pick : picks) {
                 // we have to add one because dice start at 1
                 if (pick.equals("123456")) {
-                    setScore += 1500;
+                    players.get(currentPlayer).changeSetScore(1500);
                 }
                 if (Integer.parseInt(pick) == 1) {
-                    setScore += 100;
+					players.get(currentPlayer).changeSetScore(100);
                 }
                 if (Integer.parseInt(pick) == 5) {
-                    setScore += 50;
+					players.get(currentPlayer).changeSetScore(50);
                 }
                 if (pick.length() == 3) {
                     if (pick.substring(0, 1).equals("1")) {
-                        setScore += 300;
+						players.get(currentPlayer).changeSetScore(300);
                     } else {
-                        setScore += Integer.parseInt(pick.substring(0, 1)) * 100;
+						players.get(currentPlayer).changeSetScore(Integer.parseInt(pick.substring(0, 1)) * 100);
                     }
                 }
                 if (pick.length() == 4) {
-                    setScore += 1000;
+					players.get(currentPlayer).changeSetScore(1000);
                 }
                 if (pick.length() == 5) {
-                    setScore += 2000;
+					players.get(currentPlayer).changeSetScore(2000);
                 }
                 if (pick.length() == 6) {
-                    setScore += 3000;
+					players.get(currentPlayer).changeSetScore(3000);
                 }
             }
 			//have to turn off certain buttons not allowed to use
@@ -218,7 +222,7 @@ class gameBoard extends JFrame {
 			possibleOpts.setLength(0);
 			playerPicks = "";
 			combinationlbl.setText("");
-			lblScore.setText(Integer.toString(setScore));
+			lblScore.setText(Integer.toString(players.get(currentPlayer).getSetScore()));
 			playerPicksField.setText("");
 		} else {
 			JOptionPane.showMessageDialog(frame, "not a possible option please try again");
@@ -266,7 +270,7 @@ class gameBoard extends JFrame {
 				diceLbls[n].setIcon(new ImageIcon("src\\images\\headline-lockup.png"));
 			}
 		} else {
-			JOptionPane.showMessageDialog(frame, "Cleared All Dice! roll all again \n current set score: " + setScore);
+			JOptionPane.showMessageDialog(frame, "Cleared All Dice! roll all again \n current set score: " + players.get(currentPlayer).getSetScore());
 			numDice = 6;
 			resetDice();
 		}
@@ -292,7 +296,7 @@ class gameBoard extends JFrame {
 			}
 		}
 		System.out.println(pairs);
-		if(pairCount == 3){ possibleOpts.append(pairs).append(" "); setScore += 1500; }
+		if(pairCount == 3){ possibleOpts.append(pairs).append(" "); curSetScore += 1500; }
 	}
 	//checks to see if two triplets
     private void twoTripletCheck(){
@@ -302,7 +306,7 @@ class gameBoard extends JFrame {
 			String num = Integer.toString(n);
 			if (diceSides[n] == 3) { tripCount++; possibleOpts.append(num).append(num).append(num);}
 		}
-		if(tripCount==2) { possibleOpts.append(" "); setScore += 2500; }
+		if(tripCount==2) { possibleOpts.append(" "); curSetScore += 2500; }
 		else { possibleOpts = new StringBuilder(); }
 	}
 	//gets possible options available
@@ -367,10 +371,10 @@ class gameBoard extends JFrame {
 		 btnRoll.setVisible(true);
 		 btnTakePoints.setVisible(false);
 		 combinationlbl.setText("");
-		 currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
+		 curPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
 		 playerTotal.setText(Integer.toString(players.get(currentPlayer).getScore()));
-		 setScore=0;
-		 lblScore.setText(Integer.toString(setScore));
+		 curSetScore =0;
+		 lblScore.setText(Integer.toString(players.get(currentPlayer).getSetScore()));
 		 farkleCountlbl.setText(Integer.toString(players.get(currentPlayer).getFarkleCount()));
 		 resetDice();
 	}
@@ -382,7 +386,7 @@ class gameBoard extends JFrame {
 		btnPassTurn.setVisible(false);
 		btnTakePoints.setVisible(false);
 		currentPlayer = (Math.random()<0.5)?0:1;
-		currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
+		curPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
 		farkleCountlbl.setText("0");
 	}
 	//sets diceSides and dice and images, checks number and sets options label
@@ -417,23 +421,30 @@ class gameBoard extends JFrame {
 		int n = JOptionPane.showOptionDialog(frame, "Would you like to Continue from previous Player(Points/num dice)", "Pass Turn", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 		System.out.println(n);
 		players.get(currentPlayer).resetFarkle();
-		//NEED TO CHANGE PLAYER CLASS TO ALLOW += SCORE//
-		players.get(currentPlayer).setScore(setScore);
+		// need to figure out how i can give the next player the current players set score if
+		// the next player wants to play off there points
+		players.get(currentPlayer).resetSetScore();
+		players.get(currentPlayer).setScore(curSetScore);
 		if(players.get(currentPlayer).getScore() >= 10000) { endGame(); }
 		if(n == 0){
 			playerChanger();
 			farkleCountlbl.setText(Integer.toString(players.get(currentPlayer).getFarkleCount()));
-			currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
+			curPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
 			playerTotal.setText(Integer.toString(players.get(currentPlayer).getScore()));
 			possibleOpts.setLength(0);
 		} else { /*need to keep score for next player and do not change number of dice*/
+			int tempSet = players.get(currentPlayer).getSetScore();
+			players.get(currentPlayer).resetSetScore();
+
 			playerChanger();
+
+			players.get(currentPlayer).changeSetScore(tempSet);
 			combinationlbl.setText("");
-			currentPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
+			curPlayerlbl.setText("currently " + players.get(currentPlayer).getName() + "'s turn");
 			playerTotal.setText(Integer.toString(players.get(currentPlayer).getScore()));
-			setScore=0;
+			curSetScore =0;
 			farkleCountlbl.setText(Integer.toString((players.get(currentPlayer).getFarkleCount())));
-			lblScore.setText(Integer.toString(setScore));
+			lblScore.setText(Integer.toString(players.get(currentPlayer).getSetScore()));
 			resetDice();
 		}
 	}
