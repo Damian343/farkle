@@ -15,9 +15,6 @@ class Player {
 	public void setScore(int totalScore) {
 		this.totalScore = totalScore;
 	}
-	public void incrementScore(int increment){
-		totalScore += increment;
-	}
 	public int getScore() {
 		return totalScore;
 	}
@@ -31,15 +28,15 @@ class Player {
 		return farkleCount;
 	}
 	public void incrementFarkle(){
-		farkleCount++;
+		this.farkleCount++;
 	}
 	public int getSetScore(){
 		return setScore;
 	}
-	public void changeSetScore(int newScore){
-		setScore += newScore;
+	public void increaseScore(int increment){
+		this.setScore += increment;
 	}
 	public void resetSetScore() {
-		setScore = 0;
+		this.setScore = 0;
 	}
 }
