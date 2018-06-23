@@ -53,7 +53,11 @@ public class Dice {
         }
     }
 
-    private void resetDice() {
+    public int[] getDice(){
+        return dice;
+    }
+
+    public void resetDice() {
         Arrays.fill(diceSides, 0);
         Arrays.fill(dice, 0);
     }

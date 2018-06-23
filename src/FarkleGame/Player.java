@@ -36,6 +36,7 @@ class Player {
 	public void increaseScore(int increment){
 		this.setScore += increment;
 	}
+	public void changeSetScore(int newScore) { this.setScore = newScore; }
 	public void resetSetScore() {
 		this.setScore = 0;
 	}

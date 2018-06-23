@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.List;
 
 //each player class keeps track of score, random player is selected to go first
-class gameBoard extends JFrame {
+class GameBoard extends JFrame {
 	//gui elements
 	private final JFrame frame = new JFrame();
     private JTextField playerPicksField;
@@ -29,7 +29,7 @@ class gameBoard extends JFrame {
 	private StringBuilder possibleOpts;
 	
 	//called from main menu, creates the players, starts game
-    gameBoard(String nameOne, String nameTwo, boolean buyIn) {
+    GameBoard() {
 		setTitle("Farkle");
 		players.add(new Player(nameOne));
 		players.add(new Player(nameTwo));
@@ -183,13 +183,42 @@ class gameBoard extends JFrame {
 		List<String> picks = (Arrays.asList(playerPicks.split("\\s+")));
 		List<String> opts = new LinkedList<>(Arrays.asList(possibleOpts.toString().split("\\s+")));
 		
-		
+		/*
+		need to add check for the possible 6 combo banger
+		possible 6 are
+			six of kind  = 3000 points
+			1-6 straight = 1500 points
+			three pairs  = 1500 points
+			four + pair  = 1500 points
+			two trips    = 2500 points
+		need to realize what points to be awarded
+		the possible options number determines somewhat
+		of the players score
+		 */
 		if(checkPickValidity(picks, opts)) {
+			/*
+			have to take in to consideration
+			that picks will not have the number of
+			good numbers but the total options
+			so good approach is to check if
+			the number of dice is equal
+			to six then check if the total possible
+			options is one we then know
+			this option is a six dice roll
+			possiblity
+			 */
             for (String pick : picks) {
                 // we have to add one because dice start at 1
                 if (pick.equals("123456")) {
                     player.increaseScore(1500);
                 }
+                if(dice.getNumDice() == 6 && checker.getPossibleOpts().length == 1){
+					if(checker.twoTripletCheck(dice.getDiceSides())){
+						player.increaseScore(2500);
+					} else {
+						player.increaseScore(1500);
+					}
+				}
                 if (Integer.parseInt(pick) == 1) {
 					player.increaseScore(100);
                 }
@@ -430,7 +459,7 @@ class gameBoard extends JFrame {
 				null, null, null);
 		player.resetFarkle();
 		player.resetSetScore();
-		player.changeSetScore(curSetScore);
+		player.increaseScore(curSetScore);
 
 		if(player.getScore() >= 10000) { endGame(); }
 		if(n == 0){
