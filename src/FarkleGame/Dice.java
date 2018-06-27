@@ -36,9 +36,9 @@ public class Dice {
         resetDice();
         int n;
         for(int x=0; x < numDice; x++) {
-            n = random.nextInt(6) + 1;
+            n = random.nextInt(dice.length-1);
             dice[x] = n;
-            diceSides[n-1]++;
+            diceSides[n]++;
         }
         System.out.println(Arrays.toString(dice));
         System.out.println(Arrays.toString(diceSides));

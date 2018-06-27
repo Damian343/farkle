@@ -71,7 +71,9 @@ class gameStart extends JFrame{
 	
 	private void start(String nameOne, String nameTwo, boolean buyIn){
 		dispose();
-		gameBoard gameBoard = new gameBoard(nameOne, nameTwo, buyIn);
+		String[] names = {nameOne, nameTwo};
+		Game game = new Game(names);
+		game.newGame();
 	}
 	
 	public static void main(String[] args) {

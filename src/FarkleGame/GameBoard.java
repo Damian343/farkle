@@ -15,17 +15,17 @@ class GameBoard extends JFrame {
 	private JButton btnPassTurn, btnRoll, btnTakePoints;
 	private JLabel combinationlbl, curPlayerlbl, lblScore, farkleCountlbl, playerTotal;
 	private JLabel[] diceLbls;
-
+	//dice elements
 	private int[] diceSides;
 	private int[] dice;
 	private int numDice;
-
+	//player elements
 	private final ArrayList<Player> players = new ArrayList<Player>();
 	private Player player;
 	private int curSetScore;
 	private int playerIndex;
     private Random random;
-
+	//combochecker elements
 	private StringBuilder possibleOpts;
 	
 	//called from main menu, creates the players, starts game
@@ -52,86 +52,68 @@ class GameBoard extends JFrame {
 
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(100, 100, 459, 300);
-        JPanel contentPane = new JPanel();
+		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JLabel playerScorelbl = new JLabel("Players Score");
-		playerScorelbl.setBounds(50, 182, 65, 14);
-		contentPane.add(playerScorelbl);
-		
-		JLabel lblAvailableCombinations = new JLabel("Available Combinations: ");
-		lblAvailableCombinations.setBounds(10, 122, 119, 14);
-		contentPane.add(lblAvailableCombinations);
-		
-		combinationlbl = new JLabel("");
-		combinationlbl.setBounds(158, 122, 124, 20 );
-		contentPane.add(combinationlbl);
-		
-		JLabel lblPleseSelectCombinations = new JLabel("Dice Selection: ");
-		lblPleseSelectCombinations.setBounds(50, 150, 89, 14);
-		contentPane.add(lblPleseSelectCombinations);
-		
-		JLabel lblFarkleCount = new JLabel("Farkle Count");
-		lblFarkleCount.setBounds(282, 182, 71, 14);
-		contentPane.add(lblFarkleCount);
-		
-		farkleCountlbl = new JLabel("");
-		farkleCountlbl.setBounds(351, 182, 46, 14);
-		contentPane.add(farkleCountlbl);
-		
-		btnRoll = new JButton("Roll");
-		btnRoll.addActionListener((ActionEvent e) -> diceRoll());
-		btnRoll.setBounds(10, 227, 89, 23);
-		contentPane.add(btnRoll);
-		
-		diceLbls = new JLabel[6];
 
-		diceLbls[0] = new JLabel("");
-		diceLbls[0].setBounds(20, 46, 46, 42);
-		contentPane.add(diceLbls[0]);
-		
-		diceLbls[1] = new JLabel("");
-		diceLbls[1].setBounds(92, 46, 46, 42);
-		contentPane.add(diceLbls[1]);
-		
-		diceLbls[2] = new JLabel("");
-		diceLbls[2].setBounds(164, 46, 46, 42);
-		contentPane.add(diceLbls[2]);
-		
-		diceLbls[3] = new JLabel("");
-		diceLbls[3].setBounds(236, 46, 46, 42);
-		contentPane.add(diceLbls[3]);
-		
-		diceLbls[4] = new JLabel("");
-		diceLbls[4].setBounds(308, 46, 46, 42);
-		contentPane.add(diceLbls[4]);
-		
-		diceLbls[5] = new JLabel("");
-		diceLbls[5].setBounds(380, 46, 46, 42);
-		contentPane.add(diceLbls[5]);
-		
+		/*
+			sets positions and initial text of labels
+		*/
 		curPlayerlbl = new JLabel("");
 		curPlayerlbl.setFont(font);
 		curPlayerlbl.setBounds(10, 15, 500, 20);
 		contentPane.add(curPlayerlbl);
-		
-		JButton btnAvailableComobs = new JButton("Combinations");
-		btnAvailableComobs.addActionListener((ActionEvent e) -> getCombos());
-		btnAvailableComobs.setBounds(324, 227, 97, 23);
-		contentPane.add(btnAvailableComobs);
-		
+
+		JLabel lblAvailableCombinations = new JLabel("Available Combinations: ");
+		lblAvailableCombinations.setBounds(10, 122, 119, 14);
+		contentPane.add(lblAvailableCombinations);
+
 		playerPicksField= new JTextField();
 		playerPicksField.setBounds(128, 147, 86, 20);
 		contentPane.add(playerPicksField);
 		playerPicksField.setColumns(10);
-		
-		btnPassTurn = new JButton("Pass Turn");
-		btnPassTurn.addActionListener((ActionEvent e) -> passTurn());
-		btnPassTurn.setBounds(225, 227, 89, 23);
-		contentPane.add(btnPassTurn);
-		
+
+		JLabel playerScorelbl = new JLabel("Players Score");
+		playerScorelbl.setBounds(50, 182, 65, 14);
+		contentPane.add(playerScorelbl);
+
+		JLabel lblPleseSelectCombinations = new JLabel("Dice Selection: ");
+		lblPleseSelectCombinations.setBounds(50, 150, 89, 14);
+		contentPane.add(lblPleseSelectCombinations);
+
+		combinationlbl = new JLabel("");
+		combinationlbl.setBounds(158, 122, 124, 20 );
+		contentPane.add(combinationlbl);
+
+		lblScore = new JLabel("0");
+		lblScore.setBounds(125, 182, 46, 14);
+		contentPane.add(lblScore);
+
+		JLabel lblFarkleCount = new JLabel("Farkle Count");
+		lblFarkleCount.setBounds(282, 182, 71, 14);
+		contentPane.add(lblFarkleCount);
+
+		farkleCountlbl = new JLabel("");
+		farkleCountlbl.setBounds(351, 182, 46, 14);
+		contentPane.add(farkleCountlbl);
+
+		playerTotal = new JLabel("0");
+		playerTotal.setBounds(351, 122, 46, 14);
+		contentPane.add(playerTotal);
+
+		JLabel lblPlayerTotal = new JLabel("Player Total");
+		lblPlayerTotal.setBounds(282, 122, 65, 14);
+		contentPane.add(lblPlayerTotal);
+
+		/*
+			sets button positions and actions
+		*/
+		btnRoll = new JButton("Roll");
+		btnRoll.addActionListener((ActionEvent e) -> diceRoll());
+		btnRoll.setBounds(10, 227, 89, 23);
+		contentPane.add(btnRoll);
+
 		btnTakePoints = new JButton("Take points");
 		btnTakePoints.addActionListener((ActionEvent e) -> {
 			String text = playerPicksField.getText();
@@ -140,19 +122,45 @@ class GameBoard extends JFrame {
 		});
 		btnTakePoints.setBounds(115, 227, 89, 23);
 		contentPane.add(btnTakePoints);
-		
-		lblScore = new JLabel("0");
-		lblScore.setBounds(125, 182, 46, 14);
-		contentPane.add(lblScore);
-		
-		JLabel lblPlayerTotal = new JLabel("Player Total");
-		lblPlayerTotal.setBounds(282, 122, 65, 14);
-		contentPane.add(lblPlayerTotal);
-		
-		playerTotal = new JLabel("0");
-		playerTotal.setBounds(351, 122, 46, 14);
-		contentPane.add(playerTotal);
-		//messy need to clean
+
+		btnPassTurn = new JButton("Pass Turn");
+		btnPassTurn.addActionListener((ActionEvent e) -> passTurn());
+		btnPassTurn.setBounds(225, 227, 89, 23);
+		contentPane.add(btnPassTurn);
+		//not used in any other functions no need to be global
+		JButton btnAvailableComobs = new JButton("Combinations");
+		btnAvailableComobs.addActionListener((ActionEvent e) -> getCombos());
+		btnAvailableComobs.setBounds(324, 227, 97, 23);
+		contentPane.add(btnAvailableComobs);
+		/*
+			sets the dice positions and adds to frame
+		*/
+		diceLbls = new JLabel[6];
+
+		diceLbls[0] = new JLabel("");
+		diceLbls[0].setBounds(20, 46, 46, 42);
+		contentPane.add(diceLbls[0]);
+
+		diceLbls[1] = new JLabel("");
+		diceLbls[1].setBounds(92, 46, 46, 42);
+		contentPane.add(diceLbls[1]);
+
+		diceLbls[2] = new JLabel("");
+		diceLbls[2].setBounds(164, 46, 46, 42);
+		contentPane.add(diceLbls[2]);
+
+		diceLbls[3] = new JLabel("");
+		diceLbls[3].setBounds(236, 46, 46, 42);
+		contentPane.add(diceLbls[3]);
+
+		diceLbls[4] = new JLabel("");
+		diceLbls[4].setBounds(308, 46, 46, 42);
+		contentPane.add(diceLbls[4]);
+
+		diceLbls[5] = new JLabel("");
+		diceLbls[5].setBounds(380, 46, 46, 42);
+		contentPane.add(diceLbls[5]);
+
 		setVisible(true);
 		resetDice();
 	}
@@ -161,7 +169,7 @@ class GameBoard extends JFrame {
 		comboSheet combos = new comboSheet();
 	}
 	//Pass turn when you farkle has to be different
-    private void resetDice() {
+    public void resetDice() {
 		//blank out all label
 		numDice = diceLbls.length;
 		for(int x=0; x < numDice; x++) {
@@ -448,15 +456,34 @@ class GameBoard extends JFrame {
 			btnPassTurn.setVisible(false);
 		}
 	}
-	
-	private void passTurn() {
-		//see if player wants to continue 
+
+	public int turnAlert(String name) {
 		int n = JOptionPane.showOptionDialog(frame,
-				"Would you like to Continue from previous Player(Points/num dice)",
+				"Would " + name + " like to Continue from previous Player(Points/num dice)",
 				"Pass Turn",
 				JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE,
 				null, null, null);
+		return n;
+	}
+
+	public void playerTakesDice(Player player) {
+		combinationlbl.setText("");
+		curPlayerlbl.setText("currently " + player.getName() + "'s turn");
+		playerTotal.setText(Integer.toString(player.getScore()));
+		farkleCountlbl.setText(Integer.toString((player.getFarkleCount())));
+		lblScore.setText(Integer.toString(player.getSetScore()));
+	}
+
+	public void playerDoesntTakeDice(Player player) {
+		farkleCountlbl.setText(Integer.toString(player.getFarkleCount()));
+		curPlayerlbl.setText("currently " + player.getName() + "'s turn");
+		playerTotal.setText(Integer.toString(player.getScore()));
+	}
+	
+	private void passTurn() {
+		//see if player wants to continue 
+
 		player.resetFarkle();
 		player.resetSetScore();
 		player.increaseScore(curSetScore);
@@ -491,8 +518,10 @@ class GameBoard extends JFrame {
 		resetGame();
 	}
 	//call when player wins to reset
-    private void resetGame(){
-		Arrays.fill(diceSides, 0); Arrays.fill(dice, 0);
-		
+    public void resetGame(String name){
+    	resetDice();
+		playerTotal.setText("0");
+		farkleCountlbl.setText("0");
+		curPlayerlbl.setText("Currently " + name + "'s turn.");
 	}
 }

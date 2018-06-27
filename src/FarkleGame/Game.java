@@ -29,7 +29,7 @@ public class Game {
     public void newGame() {
         playerIdx = random.nextInt(players.size());
         player = players.get(playerIdx);
-        gameBoard.startState();
+
     }
 
     public void roll() {
@@ -59,9 +59,11 @@ public class Game {
     }
 
     private void passTurn() {
-        if(gameBoard.turnAlert()){
+
+        if(player.getScore() >= 10000) endGame();
+        else if(gameBoard.turnAlert(players.get((playerIdx+1) % players.size()).getName()) == 0){
             playerChanger();
-            gameBoard.playerChangePass(Player player);
+            gameBoard.playerDoesntTakeDice(player);
             checker.resetPossibleOpts();
         } else {
             int tempScore = player.getSetScore();
@@ -69,13 +71,29 @@ public class Game {
             playerChanger();
             player.changeSetScore(tempScore);
 
-            gameBoard.playerChangeTakePoints(Player player);
+            gameBoard.playerTakesDice(player);
             dice.resetDice();
         }
+
     }
 
     private void endGame() {
         gameBoard.endGame();
         dice.resetDice();
+    }
+
+    private void randomPlayer() {
+        player = players.get(random.nextInt(players.size()-1));
+    }
+
+    private void resetGame() {
+        for(Player player : players){
+            player.resetFarkle();
+            player.resetSetScore();
+            player.resetScore();
+        }
+        dice.resetDice();
+        randomPlayer();
+        gameBoard.resetGame(player.getName());
     }
 }
